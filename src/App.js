@@ -1,28 +1,57 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React,{useState,useEffect} from 'react';
 import './App.css';
+import {BrowserRouter} from "react-router-dom";
+import {Layout} from "./components/Layout";
+import { ThemeProvider } from '@material-ui/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-class App extends Component {
-  render() {
+import theme from './theme';
+
+/**
+ * Demo app
+
+ */
+const App = ({apiRoot, calderaToken,wpNonce}) => {
+    /**
+     * Track token
+     */
+    const [token,setToken] = useState(calderaToken);
+
+    /**
+     * Get token via remote API
+     */
+    useEffect( () => {
+        if( ! token ){
+            const url = wpNonce ? `${apiRoot}/token?_wpnonce=${wpNonce}` : `${apiRoot}/token`;
+            fetch(url, {
+                method: 'POST'
+            })
+                .then(r => r.json())
+                .then(r => {
+                    setToken(r.token);
+                })
+                .catch(e => console.log(e));
+        }
+    },[token,setToken]);
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+        <BrowserRouter>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Layout
+                    token={token}
+                    apiRoot={apiRoot}
+                />
+            </ThemeProvider>
+        </BrowserRouter>
     );
-  }
-}
+};
+
+App.defaultProps = {
+    apiRoot: 'https://calderawp.lndo.site/wp-json/caldera-api/v1/messages/mailchimp/v1',
+    wpNonce: null,
+    calderaToken: null,
+
+};
 
 export default App;
