@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 import {Link} from "react-router-dom";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
     },
@@ -19,21 +19,16 @@ const useStyles = makeStyles({
     },
     menuListItem: {
         display: 'inline',
-        color: 'white'
+        color: theme.palette.white.main,
     },
-});
+    menuListA: {
+        color: theme.palette.white.main,
+        padding: '6px',
 
-const MenuList = ({className, classNameMenuList}) => (
-    <ul className={className}>
-        <li className={classNameMenuList}>
-            <Link to="/">Home</Link>
+    }
+}));
 
-        </li>
-        <li className={classNameMenuList}>
-            <Link to="/surveys">Surveys</Link>
-        </li>
-    </ul>
-);
+
 
 
 export const TopBar = () => {
@@ -41,13 +36,21 @@ export const TopBar = () => {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static" color="default">
+            <AppBar position="static" color="primary">
                 <Toolbar>
                     <Typography variant="h6" color="inherit">
                         CalderaWP User and Community Surveys
                     </Typography>
                     <nav className={classes.nav}>
-                        <MenuList className={classes.menuList} classNameMenuList={classes.menuListItem}/>
+                        <ul className={classes.menuList}>
+                            <li className={classes.menuListItem}>
+                                <Link className={classes.menuListA} to="/">Home</Link>
+                            </li>
+                            <li className={classes.menuListItem}>
+                                <Link className={classes.menuListA} to="/surveys">Surveys</Link>
+                            </li>
+                        </ul>
+
                     </nav>
                 </Toolbar>
             </AppBar>
